@@ -1,0 +1,12 @@
+
+
+ablauf:
+- information parser mit folder path starten:
+  1. holt sich artist/album name aus dem folder name
+  2. holt sich trackinformationen über verschiedene GkParser (last.fm, gracenote)
+  3. schreibt diese in ein .properties file im angegebenen folder
+- mp3tagger mit folder path starten:
+  1. .properties file mit configuration component auslesen
+  2. tagger profile daraus erstellen
+  3. files taggen
+
