@@ -3,6 +3,7 @@ package com.zwb.mp3tag.connector.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
@@ -10,15 +11,16 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import com.zwb.mp3tag.connector.api.IMetadataPersister;
 import com.zwb.mp3tag.connector.exception.gkMp3TaggerConnectorRuntimeExceptionFileIO;
 import com.zwb.tab.Tab;
 
-public class PropertyProvider
+public class MetainfoPropertyPersister implements IMetadataPersister
 {
 	Properties props;
 	File file;
 	
-	public PropertyProvider(String folder, String filename)
+	public MetainfoPropertyPersister(String folder, String filename)
 	{
 		try 
 		{
@@ -31,7 +33,7 @@ public class PropertyProvider
 		}
 	}
 	
-	public PropertyProvider(String path)
+	public MetainfoPropertyPersister(String path)
 	{
 		try 
 		{
@@ -58,12 +60,12 @@ public class PropertyProvider
 		}
 	}
 	
-	public String getProperty(String key)
+	public String getValue(String key)
 	{
 		return this.props.getProperty(key);
 	}
 	
-	public void setProperty(String key, String value)
+	public void setValue(String key, String value)
 	{
 		try 
 		{
@@ -78,7 +80,7 @@ public class PropertyProvider
 		}
 	}
 	
-	public void setProperties(Map<String,String> properties)
+	public void setValues(Map<String,String> properties)
 	{
 		try 
 		{
@@ -121,5 +123,37 @@ public class PropertyProvider
 		}
 		return tab.printFormatted();
 	}
+	
+	public void sort()
+	{
+		Map<String,String> map = new TreeMap<>();
+		Tab tab = new Tab("","","","");
+		if(this.props.entrySet()!=null)
+		{
+			for(Entry<Object, Object> e: this.props.entrySet())
+			{
+				map.put(e.getKey().toString(), e.getValue().toString());
+			}
+		}
+		if(this.props.entrySet()!=null)
+		{
+			for(Entry<String, String> e: map.entrySet())
+			{
+				tab.addRow(e.getKey(), "=", e.getValue());
+			}
+		}
+		try 
+		{
+			FileWriter fw = new FileWriter(this.file);
+			fw.write(tab.printHeadless());
+			fw.close();
+		}
+		catch (IOException e) 
+		{
+			throw new gkMp3TaggerConnectorRuntimeExceptionFileIO("error writing/reading file <"+this.file.getAbsolutePath()+">", e);
+		}
+	}
+	
+	
 	
 }

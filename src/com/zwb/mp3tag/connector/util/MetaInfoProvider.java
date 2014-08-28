@@ -1,35 +1,63 @@
 package com.zwb.mp3tag.connector.util;
 
-public class MetaInfoProvider extends PropertyProvider
+import com.zwb.mp3tag.connector.api.IMetadataPersister;
+
+public class MetainfoProvider
 {
-	public MetaInfoProvider(String path)
+	IMetadataPersister provider;
+	
+	public MetainfoProvider(String path, boolean simpleForm)
 	{
-		super(path);
+		if(simpleForm)
+		{
+			throw new RuntimeException("NOT IMPLEMENTED YET!");
+		}
+		else
+		{
+			this.provider = new MetainfoPropertyPersister(path);
+		}
 	}
 
-	public MetaInfoProvider(String folder, String filename)
+	public MetainfoProvider(String folder, String filename, boolean simpleForm)
 	{
-		super(folder, filename);
+		if(simpleForm)
+		{
+			throw new RuntimeException("NOT IMPLEMENTED YET!");
+		}
+		else
+		{
+			this.provider = new MetainfoPropertyPersister(folder, filename);
+		}
 	}
 
 	public String getArtistName()
 	{
-		return this.getProperty(AttributeKeys.getKeyArtistName());
+		return provider.getValue(AttributeKeys.getKeyArtistName());
 	}
 	
 	public void setArtistName(String name)
 	{
-		this.setProperty(AttributeKeys.getKeyArtistName(), name);
+		provider.setValue(AttributeKeys.getKeyArtistName(), name);
 	}
 
 	public String getReleaseName()
 	{
-		return this.getProperty(AttributeKeys.getKeyReleaseName());
+		return provider.getValue(AttributeKeys.getKeyReleaseName());
 	}
 	
 	public void setReleaseName(String name)
 	{
-		this.setProperty(AttributeKeys.getKeyReleaseName(), name);
+		provider.setValue(AttributeKeys.getKeyReleaseName(), name);
+	}
+	
+	public String getTrackName(int trackNo)
+	{
+		return provider.getValue(AttributeKeys.getKeyTrackName(trackNo));
+	}
+	
+	public void setTrackName(int trackNo, String trackName)
+	{
+		provider.setValue(AttributeKeys.getKeyTrackName(trackNo), trackName);
 	}
 
 }
